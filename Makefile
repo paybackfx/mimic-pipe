@@ -1,43 +1,36 @@
-NAME        = pipex
-CC          = cc
-CFLAGS      = -Wall -Wextra -Werror -I includes -I libft -I gnl
-RM          = rm -f
+SRCS            =   libfts/ft_bzero.c libfts/ft_calloc.c libfts/ft_memset.c\
+                    libfts/ft_split.c libfts/ft_strchr.c libfts/ft_strdup.c\
+                    libfts/ft_strjoin.c libfts/ft_strlen.c libfts/ft_strnstr.c\
+                    libfts/ft_substr.c pipex_utils.c pipex.c affi.c\
+                    pipex_utils_2.c libfts/ft_strcmp.c here_doc.c \
+                    ./get_next_line_s/get_next_line.c  ./get_next_line_s/get_next_line_utils.c \
+                    here_doc_2.c
 
-# Source Directories
-SRCS_DIR    = srcs
-LIBFT_DIR   = libft
-GNL_DIR     = gnl
+OBJS            = $(SRCS:.c=.o)
 
-# Source Files
-# Explicitly list source files to avoid picking up junk or deleted files if wildcard fails to update (unlikely but safe)
-# Actually wildcard is fine, but I'll update dependencies.
-SRCS        = srcs/pipex.c srcs/exec.c srcs/cleanup.c srcs/affi.c srcs/here_doc.c
-LIBFT_SRCS  = $(wildcard $(LIBFT_DIR)/*.c)
-GNL_SRCS    = $(wildcard $(GNL_DIR)/*.c)
+CC              = cc
+RM              = rm -f
+CFLAGS          = -Wall -Wextra -Werror
 
-# Object Files
-OBJS        = $(SRCS:.c=.o)
-LIBFT_OBJS  = $(LIBFT_SRCS:.c=.o)
-GNL_OBJS    = $(GNL_SRCS:.c=.o)
+NAME            = pipex.a
 
-# All Objects
-ALL_OBJS    = $(OBJS) $(LIBFT_OBJS) $(GNL_OBJS)
+# Final executable name
+PROG            = pipex
 
-# Rules
-all: $(NAME)
+all:            $(PROG)
 
-$(NAME): $(ALL_OBJS)
-	$(CC) $(CFLAGS) $(ALL_OBJS) -o $(NAME)
+$(NAME):        $(OBJS)
+				ar rc $(NAME) $(OBJS)
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+$(PROG):        $(NAME)
+				$(CC) pipex.c $(NAME) -o $(PROG)
 
 clean:
-	$(RM) $(ALL_OBJS)
+				$(RM) $(OBJS)
 
-fclean: clean
-	$(RM) $(NAME)
+fclean:         clean
+				$(RM) $(NAME) $(PROG)
 
-re: fclean all
+re:             fclean all
 
-.PHONY: all clean fclean re
+.PHONY:         all clean fclean re

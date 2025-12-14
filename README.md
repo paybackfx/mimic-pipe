@@ -1,68 +1,67 @@
-# pipex
+# mimic-pipe
 
 ## Description
-This project reproduces the behavior of the shell pipe command `|` in C. It redirects the output of the first command to the input of the second command, handling file redirection and execution permissions.
-
-## Structure
-- **srcs/**: Main source files.
-- **libft/**: Libft library sources.
-- **gnl/**: Get Next Line sources.
-- **includes/**: Header files.
+mimic-pipe is a C project that replicates the behavior of the shell pipe operator (`|`). It allows for the redirection of standard input and output between commands, enabling the chaining of multiple commands where the output of one serves as the input for the next. This implementation supports standard piping, multiple consecutive pipes, and `here_doc` functionality.
 
 ## Prerequisites
-- GCC compiler
+- GCC or Clang compiler
 - Make
 
 ## Compilation
-To compile the project, simply run `make` at the root of the repository:
-```bash
+To compile the project, run the following command in the root directory:
+
+```sh
 make
 ```
+
 This will generate the `pipex` executable.
+
+Other available Make targets:
+- `make clean`: Removes object files.
+- `make fclean`: Removes object files and the executable.
+- `make re`: Recompiles the project from scratch.
 
 ## Usage
 
-### Standard Execution
-The program is executed as follows:
-```bash
+### Standard Pipe
+Behaves like `< file1 cmd1 | cmd2 > file2`.
+
+```sh
 ./pipex file1 cmd1 cmd2 file2
 ```
-This behaves exactly like the following shell command:
-```bash
-< file1 cmd1 | cmd2 > file2
-```
 
-**Arguments:**
-- `file1`: The input file.
-- `cmd1`: The first command to execute.
-- `cmd2`: The second command to execute.
-- `file2`: The output file.
+**Example:**
+```sh
+./pipex infile "ls -l" "wc -l" outfile
+```
 
 ### Multiple Pipes
-The program supports multiple commands:
-```bash
+Supports multiple commands chained together.
+Behaves like `< file1 cmd1 | cmd2 | cmd3 ... | cmdN > file2`.
+
+```sh
 ./pipex file1 cmd1 cmd2 cmd3 ... cmdN file2
 ```
-Behaves like:
-```bash
-< file1 cmd1 | cmd2 | cmd3 ... | cmdN > file2
+
+**Example:**
+```sh
+./pipex infile "grep a" "sort" "uniq" "wc -l" outfile
 ```
 
 ### Here Doc
-Support for `here_doc` is also included:
-```bash
-./pipex here_doc LIMITER cmd1 cmd2 file2
-```
-Behaves like:
-```bash
-cmd1 << LIMITER | cmd2 >> file2
+Supports `here_doc` functionality, behaving like `cmd1 << LIMITER | cmd2 >> file`.
+
+```sh
+./pipex here_doc LIMITER cmd1 cmd2 file
 ```
 
-## Cleaning
-To remove object files and the executable, you can use:
-- `make clean`: Removes object files.
-- `make fclean`: Removes object files and the executable.
-- `make re`: Recompiles the project.
+**Example:**
+```sh
+./pipex here_doc EOF "grep a" "wc -l" outfile
+```
 
-## Updates
-- Fixed memory leaks.
+## Structure
+- `pipex.c`: Main entry point and logic.
+- `pipex_utils.c`, `pipex_utils_2.c`: Helper functions.
+- `libfts/`: Custom library functions (Libft).
+- `get_next_line_s/`: Implementation of `get_next_line` for reading input.
